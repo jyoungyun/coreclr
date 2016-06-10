@@ -19,6 +19,7 @@ usage()
     echo "skipnative - do not build native components."
     echo "skipmscorlib - do not build mscorlib.dll."
     echo "skiptests - skip the tests in the 'tests' subdirectory."
+    echo "buildtests - opposite to 'skiptests'"
     echo "skiprestore - skip restoring nuget packages."
     echo "skipnuget - skip building nuget packages."
     echo "disableoss - Disable Open Source Signing for mscorlib."
@@ -659,6 +660,11 @@ while :; do
         skiptests)
             __IncludeTests=
             __SkipTests=1
+            ;;
+
+        buildtests)
+            __IncludeTests=Include_Tests
+            __SkipTests=0
             ;;
 
         skiprestore)
