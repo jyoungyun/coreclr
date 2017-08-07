@@ -3987,6 +3987,14 @@ void LinearScan::buildRefPositionsForNode(GenTree*                  tree,
             regMaskTP candidates = getUseCandidates(useNode);
             assert((candidates & allRegs(i->registerType)) != 0);
 
+#ifdef _TARGET_ARM_
+            if (useNode->OperIsPutArgSplit())
+            {
+                // get i-th candidate
+                candidates = genFindLowestReg(candidates);
+            }
+#endif // _TARGET_ARM_
+
             // For non-localVar uses we record nothing, as nothing needs to be written back to the tree.
             GenTree* const refPosNode = i->isLocalVar ? useNode : nullptr;
             RefPosition*   pos        = newRefPosition(i, currentLoc, RefTypeUse, refPosNode, candidates,
@@ -8613,6 +8621,12 @@ void LinearScan::updateMaxSpill(RefPosition* refPosition)
                     ReturnTypeDesc* retTypeDesc = treeNode->AsCall()->GetReturnTypeDesc();
                     typ                         = retTypeDesc->GetReturnRegType(refPosition->getMultiRegIdx());
                 }
+#ifdef _TARGET_ARM_
+                else if (treeNode->OperIsPutArgSplit())
+                {
+                    typ = treeNode->AsPutArgSplit()->GetRegType(refPosition->getMultiRegIdx());
+                }
+#endif
                 else
                 {
                     typ = treeNode->TypeGet();

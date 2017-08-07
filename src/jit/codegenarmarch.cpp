@@ -1801,8 +1801,10 @@ void CodeGen::genCallInstruction(GenTreeCall* call)
 
         GenTreePtr argNode = list->Current();
 
-        fgArgTabEntryPtr curArgTabEntry = compiler->gtArgEntryByNode(call, argNode->gtSkipReloadOrCopy());
+        fgArgTabEntryPtr curArgTabEntry = compiler->gtArgEntryByNode(call, argNode);
         assert(curArgTabEntry);
+
+        argNode = argNode->gtSkipReloadOrCopy();
 
         if (curArgTabEntry->regNum == REG_STK)
             continue;
